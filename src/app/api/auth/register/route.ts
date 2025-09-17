@@ -5,10 +5,10 @@ import { TipoColaborador } from '@prisma/client';
 
 export async function POST(request: Request) {
   try {
-    const { email, senha, nome, cargo, data_admissao, tipo } = await request.json();
+    const { email, senha, nome, cargo, data_admissao, tipo, cpf, filial, projeto } = await request.json();
 
     // Validação básica
-    if (!email || !senha || !nome || !cargo || !data_admissao || !tipo) {
+    if (!email || !senha || !cpf || !nome || !cargo || !data_admissao || !tipo || !filial || !projeto) {
       return NextResponse.json({ message: 'Todos os campos são obrigatórios.' }, { status: 400 });
     }
     
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 
     // Verifica se o e-mail já existe
     const existingUser = await db.colaborador.findUnique({
-      where: { email: email },
+      where: { email: email, cpf: cpf },
     });
 
     if (existingUser) {
@@ -34,8 +34,11 @@ export async function POST(request: Request) {
       data: {
         email,
         senha: hashedPassword,
+        filial,
         nome,
+        cpf,
         cargo,
+        projeto,
         data_admissao: new Date(data_admissao),
         tipo, // Será 'COLABORADOR' ou 'RH'
       },

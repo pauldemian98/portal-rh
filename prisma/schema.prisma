@@ -15,33 +15,32 @@ datasource db {
 
 model Colaborador {
   id            Int               @id @default(autoincrement())
+  filial        String            @db.VarChar(2)
   nome          String            @db.VarChar(255)
+  cpf           String            @unique @db.VarChar(11)
   email         String            @unique @db.VarChar(255)
   senha         String            @db.VarChar(255)
   cargo         String            @db.VarChar(100)
   data_admissao DateTime          @db.Date
   tipo          TipoColaborador
+  projeto       String            @db.VarChar(3)
   pontos        Ponto[]
 }
 
 model Ponto {
-  id             Int           @id @default(autoincrement())
+  id             Int         @id @default(autoincrement())
   colaborador_id Int
-  data_hora      DateTime      @db.Timestamp(6)
-  tipo_registro  TipoRegistro
-  localizacao    String?       @db.VarChar(255)
-  justificativa  String?       @db.Text
-  colaborador    Colaborador   @relation(fields: [colaborador_id], references: [id])
+  data           DateTime    @db.Date
+  entrada1       DateTime?   @db.Time
+  saida1         DateTime?   @db.Time
+  entrada2       DateTime?   @db.Time
+  saida2         DateTime?   @db.Time
+  localizacao    String?     @db.VarChar(255)
+  justificativa  String?     @db.Text
+  colaborador    Colaborador @relation(fields: [colaborador_id], references: [id])
 }
 
 enum TipoColaborador {
   COLABORADOR
   RH
-}
-
-enum TipoRegistro {
-  ENTRADA
-  SAIDA_ALMOCO
-  RETORNO_ALMOCO
-  SAIDA
 }
